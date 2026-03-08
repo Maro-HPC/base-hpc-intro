@@ -2,151 +2,127 @@
 title: Setup
 ---
 
-There are several pieces of software you will wish to install before the
-workshop. Though installation help will be provided at the workshop, we
-recommend that these tools are installed (or at least downloaded) beforehand.
+Hay varios programas que deberá instalar antes del taller. Aunque se proporcionará ayuda para la instalación durante el taller, recomendamos que estas herramientas se instalen (o al menos se descarguen) previamente.
 
-1. [A terminal application or command-line interface](#where-to-type-commands-how-to-open-a-new-shell)
-2. [A Secure Shell application](#ssh-for-secure-connections)
+1. [Una aplicación de terminal o interfaz de línea de comandos](#dónde-escribir-comandos-cómo-abrir-una-nueva-terminal)
+2. [Una aplicación de Secure Shell](#ssh-para-conexiones-seguras)
 
 ::::::::::::::::::::::::::::::::::::::::::  prereq
 
-## Bash and SSH
+## Bash y SSH
 
-This lesson requires a terminal application (`bash`, `zsh`, or others) with
-the ability to securely connect to a remote machine (`ssh`).
+Esta lección requiere una aplicación de terminal (`bash`, `zsh` u otras) con
+la capacidad de conectarse de manera segura a una máquina remota (`ssh`).
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
-## Where to Type Commands: How to Open a New Shell
+## Dónde escribir comandos: Cómo abrir una nueva terminal
 
-The shell is a program that enables us to send commands to the computer and
-receive output. It is also referred to as the terminal or command line.
+La terminal es un programa que nos permite enviar comandos a la computadora y
+recibir resultados. También se le conoce como línea de comandos o shell.
 
-Some computers include a default Unix Shell program. The steps below describe
-some methods for identifying and opening a Unix Shell program if you already
-have one installed. There are also options for identifying and downloading a
-Unix Shell program, a Linux/UNIX emulator, or a program to access a Unix Shell
-on a server.
+Algunas computadoras incluyen un programa de shell Unix por defecto. Los pasos a continuación describen algunos métodos para identificar y abrir una shell Unix si ya tiene una instalada. También hay opciones para identificar y descargar un programa de shell Unix, un emulador de Linux/UNIX o un programa para acceder a un shell Unix en un servidor.
 
-### Unix Shells on Windows
+### Unix Shells en Windows
 
-Computers with Windows operating systems do not automatically have a Unix Shell
-program installed. In this lesson, we encourage you to use an emulator included
-in Git for Windows, which gives you access to both Bash shell commands and Git.
-If you have attended a Software Carpentry workshop session, it is likely you
-have already received instructions on how to install Git for Windows.
+Las computadoras con sistemas operativos Windows no tienen automáticamente un programa de shell Unix instalado. En esta lección, recomendamos utilizar un emulador incluido en Git para Windows, que le da acceso tanto a los comandos de la shell Bash como a Git. Si ha asistido a una sesión de taller de Software Carpentry, es probable que ya haya recibido instrucciones sobre cómo instalar Git para Windows.
 
-Once installed, you can open a terminal by running the program Git Bash from
-the Windows start menu.
+Una vez instalado, puede abrir una terminal ejecutando el programa Git Bash desde el menú de inicio de Windows.
 
-#### Shell Programs for Windows
+#### Programas de Shell para Windows
 
-- [Git for Windows][git4win] -- *Recommended*
-- [Windows Subsystem for Linux][wsl] -- advanced option for Windows 10
+- [Git for Windows][git4win] -- *Recomendado*
+- [Windows Subsystem for Linux][wsl] -- opción avanzada para Windows 10
 
 ::::::::::::::::::::::::::::::::::::::  discussion
 
-## Alternatives to Git for Windows
+## Alternativas a Git para Windows
 
-Other solutions are available for running Bash commands on Windows. There is
-now a Bash shell command-line tool available for Windows 10. Additionally,
-you can run Bash commands on a remote computer or server that already has a
-Unix Shell, from your Windows machine. This can usually be done through a
-Secure Shell (SSH) client. One such client available for free for Windows
-computers is [PuTTY][putty]. See the reference below for information on
-installing and using PuTTY, using the Windows 10 command-line tool, or
-installing and using a Unix/Linux emulator.
+Otras soluciones están disponibles para ejecutar comandos Bash en Windows. Ahora hay una herramienta de línea de comandos de Bash disponible para Windows 10. Además, puede ejecutar comandos Bash en una computadora o servidor remoto que ya tenga un shell Unix, desde su máquina con Windows. Esto generalmente se puede hacer a través de un cliente de Secure Shell (SSH). Un cliente disponible de forma gratuita para computadoras con Windows es [PuTTY][putty]. Consulte la referencia a continuación para obtener información sobre cómo instalar y usar PuTTY, usar la herramienta de línea de comandos de Windows 10 o instalar y usar un emulador de Unix/Linux.
 
-For advanced users, you may choose one of the following alternatives:
+Para usuarios avanzados, puede elegir una de las siguientes alternativas:
 
-- Install the [Windows Subsystem for Linux][wsl]
-- Use the Windows [PowerShell][ms-shell]
-- Read up on [Using a Unix/Linux emulator][unix-emulator] (Cygwin) or Secure
-  Shell (SSH) client (PuTTY)
+- Instalar el [Windows Subsystem for Linux][wsl]
+- Usar el [PowerShell][ms-shell] de Windows
+- Leer sobre [Uso de un emulador de Unix/Linux][unix-emulator] (Cygwin) o cliente de Secure Shell (SSH) (PuTTY)
 
 :::::::::::::::::::::::::::::::::::::::  challenge
 
-## Warning
+## Advertencia
 
-Commands in the Windows Subsystem for Linux (WSL), PowerShell, or Cygwin
-may differ slightly from those shown in the lesson or presented in the
-workshop. Please ask if you encounter such a mismatch -- you're
-probably not alone.
-
+Los comandos en el Windows Subsystem for Linux (WSL), PowerShell o Cygwin
+pueden diferir ligeramente de los mostrados en la lección o presentados en el
+taller. Por favor, pregunte si encuentra tal discrepancia: probablemente no esté solo.
 
 
-::::::::::::::::::::::::::::::::::::::::::::::::::
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
-### Unix Shell on macOS
+::::::::::::::::::::::::::::::::::::::::::::::::::
 
-On macOS, the default Unix Shell is accessible by running the Terminal program
-from the `/Application/Utilities` folder in Finder.
+### Unix Shell en macOS
 
-To open Terminal, try one or both of the following:
+En macOS, el shell Unix predeterminado es accesible ejecutando el programa Terminal desde la carpeta `/Application/Utilities` en Finder.
 
-- In Finder, select the Go menu, then select Utilities. Locate Terminal in the
-  Utilities folder and open it.
-- Use the Mac 'Spotlight' computer search function. Search for: `Terminal` and
-  press <kbd>Return</kbd>.
+Para abrir Terminal, intente uno o ambos de los siguientes métodos:
 
-For an introduction, see [How to Use Terminal on a Mac][mac-terminal].
+- En Finder, seleccione el menú Ir y luego seleccione Utilidades. Localice Terminal en la carpeta de Utilidades y ábralo.
+- Use la función de búsqueda de la computadora 'Spotlight' de Mac. Busque: `Terminal` y presione <kbd>Return</kbd>.
 
-### Unix Shell on Linux
+Para una introducción, consulte [Cómo usar Terminal en una Mac][mac-terminal].
 
-On most versions of Linux, the default Unix Shell is accessible by running the
-[(Gnome) Terminal](https://help.gnome.org/users/gnome-terminal/stable/) or
-[(KDE) Konsole](https://konsole.kde.org/) or
-[xterm](https://en.wikipedia.org/wiki/Xterm), which can be found via the
-applications menu or the search bar.
+### Unix Shell en Linux
 
-### Special Cases
+En la mayoría de las versiones de Linux, el shell Unix predeterminado es accesible ejecutando el
+[(Gnome) Terminal](https://help.gnome.org/users/gnome-terminal/stable/) o
+[(KDE) Konsole](https://konsole.kde.org/) o
+[xterm](https://en.wikipedia.org/wiki/Xterm), que se pueden encontrar a través del
+menú de aplicaciones o la barra de búsqueda.
 
-If none of the options above address your circumstances, try an online search
-for: `Unix shell [your operating system]`.
+### Casos Especiales
 
-## SSH for Secure Connections
+Si ninguna de las opciones anteriores aborda su situación, intente una búsqueda en línea
+con: `Unix shell [su sistema operativo]`.
 
-All students should have an SSH client installed. SSH is a tool that allows us
-to connect to and use a remote computer as our own.
+## SSH para Conexiones Seguras
 
-### SSH for Windows
+Todos los estudiantes deben tener un cliente SSH instalado. SSH es una herramienta que nos permite
+conectarnos y usar una computadora remota como si fuera nuestra.
 
-Git for Windows comes with SSH preinstalled: you do not have to do anything.
+### SSH para Windows
+
+Git para Windows viene con SSH preinstalado: no tiene que hacer nada.
 
 ::::::::::::::::::::::::::::::::::::::  discussion
 
-## GUI Support for Windows
+## Soporte gráfico (GUI) para Windows
 
-If you know that the software you will be running on the cluster requires a
-graphical user interface (a GUI window needs to open for the application to
-run properly), please install [MobaXterm](https://mobaxterm.mobatek.net) Home
+Si sabe que el software que ejecutará en el clúster requiere una
+interfaz gráfica de usuario (una ventana GUI necesita abrirse para que la aplicación se
+ejecute correctamente), instale [MobaXterm](https://mobaxterm.mobatek.net) Home
 Edition.
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
-### SSH for macOS
+### SSH para macOS
 
-macOS comes with SSH pre-installed: you do not have to do anything.
+macOS viene con SSH preinstalado: no tiene que hacer nada.
 
 ::::::::::::::::::::::::::::::::::::::  discussion
 
-## GUI Support for macOS
+## Soporte gráfico (GUI) para macOS
 
-If you know that the software you will be running requires a graphical user
-interface, please install [XQuartz](https://www.xquartz.org).
+Si sabe que el software que ejecutará requiere una interfaz gráfica de usuario, instale [XQuartz](https://www.xquartz.org).
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
-### SSH for Linux
+### SSH para Linux
 
-Linux comes with SSH and X window support preinstalled: you do not have to do
-anything.
+Linux viene con SSH y soporte para ventanas X preinstalado: no tiene que hacer
+nada.
 
 <!-- links -->
 

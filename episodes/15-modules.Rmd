@@ -1,5 +1,5 @@
 ---
-title: Accessing software via Modules
+title: Acceder a software a través de Módulos
 teaching: 30
 exercises: 15
 ---
@@ -11,102 +11,108 @@ source("load_config.R")
 
 ::::::::::::::::::::::::::::::::::::::: objectives
 
-- Load and use a software package.
-- Explain how the shell environment changes when the module mechanism loads or unloads packages.
+- Cargar y usar un paquete de software.
+- Explicar cómo cambia el entorno de la shell cuando el mecanismo de módulos carga o descarga paquetes.
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
 :::::::::::::::::::::::::::::::::::::::: questions
 
-- How do we load and unload software packages?
+- ¿Cómo cargamos y descargamos paquetes de software?
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
-On a high-performance computing system, it is seldom the case that the software
-we want to use is available when we log in. It is installed, but we will need
-to "load" it before it can run.
+En un sistema de computación de alto rendimiento, raramente el software que
+queremos usar está disponible cuando iniciamos sesión. Está instalado, pero
+necesitaremos "cargarlo" antes de que pueda ejecutarse.
 
-Before we start using individual software packages, however, we should
-understand the reasoning behind this approach. The three biggest factors are:
+Antes de empezar a usar paquetes de software individuales, sin embargo, debemos
+entender el razonamiento detrás de este enfoque. Los tres factores más grandes
+son:
 
-- software incompatibilities
-- versioning
-- dependencies
+- incompatibilidades de software
+- versiones
+- dependencias
 
-Software incompatibility is a major headache for programmers. Sometimes the
-presence (or absence) of a software package will break others that depend on
-it. Two well known examples are Python and C compiler versions.
-Python 3 famously provides a `python` command that conflicts with that provided
-by Python 2. Software compiled against a newer version of the C libraries and
-then run on a machine that has older C libraries installed will result in an
-opaque `'GLIBCXX_3.4.20' not found` error.
+La incompatibilidad de software es un dolor de cabeza importante para los
+programadores. A veces, la presencia (o ausencia) de un paquete de software
+romperá otros que dependen de él. Dos ejemplos bien conocidos son las versiones
+de Python y compilador C. Python 3 proporciona famosamente un comando `python`
+que entra en conflicto con el proporcionado por Python 2. El software compilado
+contra una versión más nueva de las bibliotecas C y luego ejecutado en una
+máquina que tiene versiones más antiguas de bibliotecas C instaladas resultará
+en un error opaco `'GLIBCXX_3.4.20' not found`.
 
-Software versioning is another common issue. A team might depend on a certain
-package version for their research project -- if the software version was to
-change (for instance, if a package was updated), it might affect their results.
-Having access to multiple software versions allows a set of researchers to
-prevent software versioning issues from affecting their results.
+El versionado del software es otro problema común. Un equipo podría depender de
+una cierta versión del paquete para su proyecto de investigación; si la versión
+del software cambiara (por ejemplo, si se actualizara un paquete), podría afectar
+sus resultados. Tener acceso a múltiples versiones de software permite a un
+conjunto de investigadores evitar que los problemas de versiones de software
+afecten sus resultados.
 
-Dependencies are where a particular software package (or even a particular
-version) depends on having access to another software package (or even a
-particular version of another software package). For example, the VASP
-materials science software may require a particular version of the
-FFTW (Fastest Fourier Transform in the West) software library available for it
-to work.
+Las dependencias son donde un paquete de software particular (o incluso una
+versión particular) depende de tener acceso a otro paquete de software (o incluso
+una versión particular de otro paquete de software). Por ejemplo, el software de
+ciencia de materiales VASP puede requerir una versión particular de la biblioteca
+de software FFTW (Transformada rápida de Fourier en el Oeste) para
+que funcione.
 
-## Environment Modules
+## Módulos de entorno
 
-Environment modules are the solution to these problems. A *module* is a
-self-contained description of a software package -- it contains the
-settings required to run a software package and, usually, encodes required
-dependencies on other software packages.
+Los módulos de entorno son la solución a estos problemas. Un *módulo* es una
+descripción autónoma de un paquete de software: contiene la configuración
+requerida para ejecutar un paquete de software y, generalmente, codifica las
+dependencias requeridas en otros paquetes de software.
 
-There are a number of different environment module implementations commonly
-used on HPC systems: the two most common are *TCL modules* and *Lmod*. Both of
-these use similar syntax and the concepts are the same so learning to use one
-will allow you to use whichever is installed on the system you are using. In
-both implementations the `module` command is used to interact with environment
-modules. An additional subcommand is usually added to the command to specify
-what you want to do. For a list of subcommands you can use `module -h` or
-`module help`. As for all commands, you can access the full help on the *man*
-pages with `man module`.
+Hay varias implementaciones diferentes de módulos de entorno comúnmente usadas en
+sistemas HPC: las dos más comunes son *módulos TCL* y *Lmod*. Ambos usan
+sintaxis similar y los conceptos son los mismos, por lo que aprender a usar uno
+te permitirá usar el que esté instalado en el sistema que estés usando. En ambas
+implementaciones, el comando `module` se usa para interactuar con módulos de
+entorno. Generalmente se agrega un subcomando adicional al comando para
+especificar qué quieres hacer. Para una lista de subcomandos puedes usar
+`module -h` o `module help`. Como con todos los comandos, puedes acceder a la
+ayuda completa en las páginas *man* con `man module`.
 
-On login you may start out with a default set of modules loaded or you may
-start out with an empty environment; this depends on the setup of the system
-you are using.
+Al iniciar sesión, puede que comiences con un conjunto predeterminado de
+módulos cargados o puede que comiences con un entorno vacío; esto depende de la
+configura del sistema que estés usando.
 
-### Listing Available Modules
+### Listar módulos disponibles
 
-To see available software modules, use `module avail`:
+Para ver módulos de software disponibles, usa `module avail`:
 
 ```{r, echo=FALSE, results='asis'}
 snippets('modules/available-modules.Rmd')
 ```
 
-Note that piping the output through `less` allows us to search within the output using the <kbd>/</kbd> key.
+Ten en cuenta que enviar la salida a través de `less` nos permite buscar dentro de la salida usando la tecla <kbd>/</kbd>.
 
-### Listing Currently Loaded Modules
+### Listar módulos cargados actualmente
 
-You can use the `module list` command to see which modules you currently have
-loaded in your environment. If you have no modules loaded, you will see a
-message telling you so.
+Puedes usar el comando `module list` para ver qué módulos tienes actualmente
+cargados en tu entorno. Si no tienes módulos cargados, verás un mensaje que te
+lo dice.
 
 ```bash
 `r config$remote$prompt` module list
 ```
 
 ```output
-No Modulefiles Currently Loaded.
-```
+Currently Loaded Modules:
+  1) autotools   3) gnu14/14.2.0   5) ucx/1.18.0         7) openmpi5/5.0.7   9) ohpc
+  2) prun/2.2    4) hwloc/2.12.0   6) libfabric/1.18.0   8) nvtop/3.2.0
 
-## Loading and Unloading Software
+``` 
 
-To load a software module, use `module load`.
+## Cargar y descargar software
 
-In this example we will use Python 3. Initially, it is not loaded.
-We can test this by using the `which` command. `which` looks for
-programs the same way that Bash does, so we can use it to tell us
-where a particular piece of software is stored.
+Para cargar un módulo de software, usa `module load`.
+
+En este ejemplo usaremos Python 3. Inicialmente, no está cargado. Podemos
+probar esto usando el comando `which`. `which` busca programas de la misma manera
+que Bash, así que podemos usarlo para decirnos dónde se almacena un software
+particular.
 
 ```bash
 `r config$remote$prompt` which python3
@@ -116,103 +122,103 @@ where a particular piece of software is stored.
 snippets('modules/missing-python.Rmd')
 ```
 
-We can load the `python3` command with `module load`:
+Podemos cargar el comando `python3` con `module load`:
 
 ```{r, echo=FALSE, results='asis'}
 snippets('modules/module-load-python.Rmd')
 ```
 
-So, what just happened?
+Entonces, ¿qué acaba de suceder?
 
-To understand the output, first we need to understand the nature of the `$PATH`
-environment variable. `$PATH` is a special environment variable that controls
-where a UNIX system looks for software. Specifically `$PATH` is a list of
-directories (separated by `:`) that the OS searches through for a command
-before giving up and telling us it can't find it. As with all environment
-variables we can print it out using `echo`.
+Para entender la salida, primero necesitamos entender la naturaleza de la
+variable de entorno `$PATH`. `$PATH` es una variable de entorno especial que
+controla dónde busca software un sistema UNIX. Específicamente, `$PATH` es una
+lista de directorios (separados por `:`) que el SO busca a través de un comando
+antes de rendirse y decirnos que no puede encontrarlo. Como con todas las
+variables de entorno, podemos imprimirlo usando `echo`.
 
 ```bash
 `r config$remote$prompt` echo $PATH
 ```
 
 ```output
-/cvmfs/pilot.eessi-hpc.org/2020.12/software/x86_64/amd/zen2/software/Python/3.x.y-GCCcore-x.y.z/bin:/cvmfs/pilot.eessi-hpc.org/2020.12/software/x86_64/amd/zen2/software/SQLite/3.31.1-GCCcore-x.y.z/bin:/cvmfs/pilot.eessi-hpc.org/2020.12/software/x86_64/amd/zen2/software/Tcl/8.6.10-GCCcore-x.y.z/bin:/cvmfs/pilot.eessi-hpc.org/2020.12/software/x86_64/amd/zen2/software/GCCcore/x.y.z/bin:/cvmfs/pilot.eessi-hpc.org/2020.12/compat/linux/x86_64/usr/bin:/opt/software/slurm/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/opt/puppetlabs/bin:/home/user01/.local/bin:/home/user01/bin
+/opt/ohpc/pub/apps/spack/local/linux-x86_64/python-3.13.5-aloly4qhu2ecv2x3urosyr44oq4hmbn6/bin:/opt/ohpc/pub/apps/spack/local/linux-x86_64/gettext-0.23.1-qde2xzyizazzp5s47ejgaxyzwc4nfnfd/bin:/opt/ohpc/pub/apps/spack/local/linux-x86_64/libxml2-2.13.5-z4a4hmomjj5ro423f22s2t32zvlciycd/bin:/opt/ohpc/pub/apps/spack/local/linux-x86_64/tar-1.35-qe5dfed6ps3v2caxwfdwwqyah7z6pbu4/bin:/opt/ohpc/pub/apps/spack/local/linux-x86_64/pigz-2.8-2smh4ufgfif5rb3j6m2zkhrca3seaiqg/bin:/opt/ohpc/pub/apps/spack/local/linux-x86_64/bzip2-1.0.8-wucwh5ce7m7vilxnz56gwqxqzx7nnwzb/bin:/opt/ohpc/pub/apps/spack/local/linux-x86_64/zstd-1.5.7-shcfzlty5p73tnmstuv2rw5uil6y6qfh/bin:/opt/ohpc/pub/apps/spack/local/linux-x86_64/libiconv-1.18-446fnouxgsaesaumijbliacukhy3ixde/bin:/opt/ohpc/pub/apps/spack/local/linux-x86_64/sqlite-3.46.0-ugjl73lgudrl2prwuxinbqtx7j4lzrne/bin:/opt/ohpc/pub/apps/spack/local/linux-x86_64/openssl-3.4.1-zsrh72hcb4nifdxsddfhbylgofl2dp7x/bin:/opt/ohpc/pub/apps/spack/local/linux-x86_64/gdbm-1.23-hzp3jssy2pkph7kmjtqyonoqfpd6fhzu/bin:/opt/ohpc/pub/apps/spack/local/linux-x86_64/expat-2.7.1-zfeeeecjghhwg3sud4lnwk354hyyxava/bin:/opt/ohpc/pub/apps/spack/local/linux-x86_64/readline-8.2-2sa76zwjjun2hdt7cn75hmt6cutq3egw/bin:/opt/ohpc/pub/apps/spack/local/linux-x86_64/ncurses-6.5-24imdjdnnqyszfgfquu23k2jcumxzfv2/bin:/opt/ohpc/pub/apps/spack/local/linux-x86_64/xz-5.6.3-dfp5nxkcjqw55iyzxcg5vcvdud3z2jmw/bin:/opt/ohpc/pub/apps/spack/local/linux-x86_64/util-linux-uuid-2.41-mtu6n2jns45cggjd7x3y7c2bax7oaes5/bin:/usr/local/sbin:/opt/ohpc/pub/apps/nvtop/bin:/opt/ohpc/pub/mpi/libfabric/1.18.0/bin:/opt/ohpc/pub/mpi/ucx-ohpc/1.18.0/bin:/opt/ohpc/pub/libs/hwloc/bin:/opt/ohpc/pub/mpi/openmpi5-gnu14/5.0.7/bin:/opt/ohpc/pub/compiler/gcc/14.2.0/bin:/opt/ohpc/pub/utils/prun/2.2:/opt/ohpc/pub/utils/autotools/bin:/opt/ohpc/pub/bin:/usr/local/bin:/usr/bin:/usr/sbin
 ```
 
-You'll notice a similarity to the output of the `which` command. In this case,
-there's only one difference: the different directory at the beginning. When we
-ran the `module load` command, it added a directory to the beginning of our
-`$PATH` -- or "prepended to PATH". Let's examine what's there:
+Notarás una similitud con la salida del comando `which`. En este caso, solo hay
+una diferencia: el directorio diferente está al principio. Cuando ejecutamos el
+comando `module load`, se agregó un directorio al principio de nuestra `$PATH`
+o se "antepuso al `$PATH`". Veamos qué hay allí:
 
 ```{r, echo=FALSE, results='asis'}
 snippets('modules/python-executable-dir.Rmd')
 ```
 
-Taking this to its conclusion, `module load` will add software to your `$PATH`.
-It "loads" software. A special note on this - depending on which version of the
-`module` program that is installed at your site, `module load` will also load
-required software dependencies.
+En resumen, `module load` agregará software a tu `$PATH`. "Carga"
+software. Una nota importante al respecto: dependiendo de qué versión del programa
+`module` esté instalada en tu sistema, `module load` también cargará las
+dependencias de software necesarias.
 
 ```{r, echo=FALSE, results='asis'}
 snippets('modules/software-dependencies.Rmd')
 ```
 
-Note that this module loading process happens principally through
-the manipulation of environment variables like `$PATH`. There
-is usually little or no data transfer involved.
+Ten en cuenta que este proceso de carga de módulos sucede principalmente a través
+de la manipulación de variables de entorno como `$PATH`. Generalmente hay poco o
+ningún movimiento de datos involucrado.
 
-The module loading process manipulates other special environment
-variables as well, including variables that influence where the
-system looks for software libraries, and sometimes variables which
-tell commercial software packages where to find license servers.
+El proceso de carga de módulos también manipula otras variables de entorno
+especiales, incluidas variables que influyen en dónde busca el sistema
+bibliotecas de software, y a veces variables que le dicen a paquetes de software
+comercial dónde encontrar servidores de licencia.
 
-The module command also restores these shell environment variables
-to their previous state when a module is unloaded.
+El comando module también restaura estas variables de entorno de la shell a su
+estado anterior cuando un módulo se descarga.
 
-## Software Versioning
+## Versioning del software
 
-So far, we've learned how to load and unload software packages. This is very
-useful. However, we have not yet addressed the issue of software versioning. At
-some point or other, you will run into issues where only one particular version
-of some software will be suitable. Perhaps a key bugfix only happened in a
-certain version, or version X broke compatibility with a file format you use.
-In either of these example cases, it helps to be very specific about what
-software is loaded.
+Hasta ahora, hemos aprendido cómo cargar y descargar paquetes de software. Esto
+es muy útil. Sin embargo, aún no hemos abordado el problema del versionado del
+software. En algún momento u otro, te encontrarás con problemas donde solo una
+versión particular de algún software será adecuada. Quizá la corrección de un error
+clave solo sucedió en una versión determinada, o la versión X rompió la
+compatibilidad con un formato de archivo que usas. En cualquiera de estos casos
+de ejemplo, es útil ser muy específico sobre qué versión de software estas cargado.
 
-Let's examine the output of `module avail` more closely, using the pager since
-there may be reams of output:
+Examinemos la salida de `module avail` más de cerca, usando el paginador ya que
+puede haber montones de salida:
 
 ```{r, echo=FALSE, results='asis'}
 snippets('modules/available-modules.Rmd')
 ```
 
-If the software your Slurm script runs requires on a specific version
-of a dependency, make sure you use the full name of the module, rather
-than the _default_ loaded when you give only its name (up to the first
-slash).
+Si el software que ejecuta tu script de Slurm requiere una versión específica de 
+una dependencia, asegúrate de utilizar el nombre completo del módulo, en lugar de 
+la versión predeterminada (_default_) que se carga cuando se indica solo su nombre 
+(hasta la primera barra `/`)
 
 :::::::::::::::::::::::::::::::::::::::  challenge
 
-## Using Software Modules in Scripts
+## Usar módulos de software en scripts
 
-Create a job that is able to run `python3 --version`. Remember, no software
-is loaded by default! Running a job is just like logging on to the system
-(you should not assume a module loaded on the login node is loaded on a
-compute node).
+Crea un trabajo que pueda ejecutar `python3 --version`. Recuerda, ¡ningún
+software está cargado por defecto! Ejecutar un trabajo es como iniciar sesión en
+el sistema (no debes asumir que un módulo cargado en el nodo de acceso está
+cargado en un nodo de cómputo).
 
 :::::::::::::::  solution
 
-## Solution
+## Solución
 
 ```bash
-`r config$remote$prompt` nano python-module.sh
-`r config$remote$prompt` cat python-module.sh
+`r config$remote$prompt` nano python-module.slurm
+`r config$remote$prompt` cat python-module.slurm
 ```
 
 ```output
 `r config$remote$shebang`
 `r config$sched$comment` `r config$sched$flag$partition`
-`r if (!is.null(config$sched$flag$qos)) {print(paste(config$sched$comment,config$sched$flag$qos))}
+`r if (!is.null(config$sched$flag$qos)) {print(paste(config$sched$comment,config$sched$flag$qos))}`
 `r config$sched$comment` `r config$sched$flag$time` 00:00:30
 
 module load `r config$remote$modules$python`
@@ -221,8 +227,10 @@ python3 --version
 ```
 
 ```bash
-`r config$remote$prompt` `r config$sched$submit$name` `r config$sched$submit$options` python-module.sh
+`r config$remote$prompt` `r config$sched$submit$name` `r config$sched$submit$options` python-module.slurm
 ```
+
+Es recomendable guardar tus scripts de trabajo con la extensión `.slurm`, ya que así podrás diferenciarlos fácilmente de los scripts de shell tradicionales.
 
 :::::::::::::::::::::::::
 
@@ -231,8 +239,8 @@ python3 --version
 
 :::::::::::::::::::::::::::::::::::::::: keypoints
 
-- Load software with `module load softwareName`.
-- Unload software with `module unload`
-- The module system handles software versioning and package conflicts for you automatically.
+- Carga software con `module load nombreDelSoftware`.
+- Descarga  software con `module unload`.
+- El sistema de módulos gestiona automáticamente el versionado del software y los conflictos entre paquetes.
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::

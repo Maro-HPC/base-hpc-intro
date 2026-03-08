@@ -2,49 +2,44 @@
 site: sandpaper::sandpaper_site
 ---
 
-This workshop is an introduction to using high-performance computing systems
-effectively. We can't cover every case or give an exhaustive course on parallel
-programming in just two days' teaching time. Instead, this workshop is intended
-to give students a good introduction and overview of the tools available and
-how to use them effectively.
+Este es un taller introductorio al uso efectivo de los sistemas de computación de alto rendimiento. No podemos cubrir todos los casos ni ofrecer un curso exhaustivo sobre programación paralela en solo dos días de enseñanza. En cambio, este taller está diseñado para proporcionar a los estudiantes una buena introducción y una visión general de las herramientas disponibles y cómo usarlas de manera efectiva.
 
 ::::::::::::::::::::::::::::::::::::::::::  prereq
 
-## Prerequisites
+## Prerrequisitos
 
-Command line experience is necessary for this lesson. We recommend the
-participants to go through
-[shell-novice](https://swcarpentry.github.io/shell-novice/), if new to the
-command line (also known as terminal or shell).
+Se requiere experiencia previa con la línea de comandos para esta lección. Recomendamos a los participantes que revisen
+[shell-novice](https://swcarpentry.github.io/shell-novice/), si son nuevos en la
+línea de comandos (también conocida como terminal o shell).
 
-::::::::::::::::::::::::::::::::::::::::::::::::::
-
-By the end of this workshop, students will know how to:
-
-- Identify problems a cluster can help solve
-- Use the UNIX shell (also known as terminal or command line) to
-  connect to a cluster.
-- Transfer files onto a cluster.
-- Submit and manage jobs on a cluster using a scheduler.
-- Observe the benefits and limitations of parallel execution.
-
-:::::::::::::::::::::::::::::::::::::::::  callout
-
-## Getting Started
-
-To get started, please follow the "[Setup Instructions](learners/setup.md)
-to ensure you have a terminal and SSH application.
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
-Note that this is the draft HPC Carpentry release. Comments and feedback are
-welcome.
+Al final de este taller, los estudiantes sabrán cómo:
+
+- Identificar problemas que un clúster puede ayudar a resolver
+- Usar la línea de comandos de UNIX (también conocida como terminal o shell) para
+  conectarse a un clúster.
+- Transferir archivos a un clúster.
+- Enviar y gestionar trabajos en un clúster utilizando un planificador.
+- Observar los beneficios y limitaciones de la ejecución paralela.
 
 :::::::::::::::::::::::::::::::::::::::::  callout
 
-## For Instructors
+## Comencemos
 
-If you are teaching this lesson in a workshop, please see the
-[Instructor notes](instructors/instructor-notes.md).
+Para comenzar, siga las "[Instrucciones de configuración](learners/setup.md)
+para asegurarse de tener una terminal y una aplicación SSH.
+
+::::::::::::::::::::::::::::::::::::::::::::::::::
+
+Tenga en cuenta que esta es la versión preliminar del taller de HPC Carpentry. Se agradecen los comentarios y sugerencias.
+
+:::::::::::::::::::::::::::::::::::::::::  callout
+
+## Para instructores
+
+Si va a impartir esta lección en un taller, consulte las
+[Notas para instructores](instructors/instructor-notes.md).
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::

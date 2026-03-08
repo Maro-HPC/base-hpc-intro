@@ -1,5 +1,5 @@
 ---
-title: Transferring files with remote computers
+title: Transferencia de archivos con computadoras remotas
 teaching: 15
 exercises: 15
 ---
@@ -11,60 +11,61 @@ source("load_config.R")
 
 ::::::::::::::::::::::::::::::::::::::: objectives
 
-- Transfer files to and from a computing cluster.
+- Transferir archivos hacia y desde un clúster de cómputo.
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
 :::::::::::::::::::::::::::::::::::::::: questions
 
-- How do I transfer files to (and from) the cluster?
+- ¿Cómo transfiero archivos hacia (y desde) el clúster?
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
-Performing work on a remote computer is not very useful if we cannot get files
-to or from the cluster. There are several options for transferring data between
-computing resources using CLI and GUI utilities, a few of which we will cover.
+Trabajar en una computadora remota no es muy útil si no podemos obtener archivos
+hacia o desde él. Hay varias opciones para transferir datos entre
+recursos de cómputo usando herramientas CLI y GUI, algunas de las cuales cubriremos.
 
-## Download Lesson Files From the Internet
+## Descargar archivos de la lección desde Internet
 
-One of the most straightforward ways to download files is to use either `curl`
-or `wget`. One of these is usually installed in most Linux shells, on Mac OS
-terminal and in GitBash. Any file that can be downloaded in your web browser
-through a direct link can be downloaded using `curl` or `wget`. This is a
-quick way to download datasets or source code. The syntax for these commands is
+Una de las formas más directas de descargar archivos es usar `curl` o `wget`.
+Uno de estos suele estar instalado en la mayoría de las shells de Linux, en la
+terminal de macOS y en GitBash. Cualquier archivo que pueda descargarse en tu
+navegador web mediante un enlace directo puede descargarse usando `curl` o
+`wget`. Esta es una forma rápida de descargar conjuntos de datos o código fuente.
+La sintaxis de estos comandos es
 
 - `wget [-O new_name] https://some/link/to/a/file`
 - `curl [-o new_name] https://some/link/to/a/file`
 
-Try it out by downloading some material we'll use later on, from a terminal on
-your local machine, using the URL of the current codebase:
+Pruébalo descargando algo del material que usaremos más adelante, desde una
+terminal en tu máquina local, usando la URL del código base actual:
 
 <https://github.com/hpc-carpentry/amdahl/tarball/main>
 
 :::::::::::::::::::::::::::::::::::::::  challenge
 
-## Download the "Tarball"
+## Descargar el "tarball"
 
-The word "tarball" in the above URL refers to a compressed archive format
-commonly used on Linux, which is the operating system the majority of HPC
-cluster machines run.
-A tarball is a lot like a `.zip` file.
-The actual file extension is `.tar.gz`, which reflects the two-stage process
-used to create the file:
-the files or folders are merged into a single file using `tar`, which is then
-compressed using `gzip`, so the file extension is "tar-dot-g-z."
-That's a mouthful, so people often say "the *xyz* tarball" instead.
+La palabra "tarball" en la URL anterior se refiere a un formato de archivo
+comprimido comúnmente usado en Linux, que es el sistema operativo en el que
+corre la mayoría de las máquinas de los clústeres HPC.
+Un tarball es muy parecido a un archivo `.zip`.
+La extensión real del archivo es `.tar.gz`, que refleja el proceso de dos etapas
+usado para crear el archivo:
+los archivos o carpetas se combinan en un solo archivo con `tar`, que luego se
+comprime con `gzip`, por lo que la extensión del archivo es "tar-punto-g-z".
+Es un trabalenguas, así que la gente suele decir "el tarball *xyz*".
 
-You may also see the extension `.tgz`, which is just an abbreviation of
+También puedes ver la extensión `.tgz`, que es solo una abreviatura de
 `.tar.gz`.
 
-By default, `curl` and `wget` download files to the same name as the URL:
-in this case, `main`.
-Use one of the above commands to save the tarball as `amdahl.tar.gz`.
+De forma predeterminada, `curl` y `wget` descargan archivos con el mismo nombre
+que la URL: en este caso, `main`.
+Usa uno de los comandos anteriores para guardar el tarball como `amdahl.tar.gz`.
 
 :::::::::::::::  solution
 
-## `wget` and `curl` Commands
+## Comandos de `wget` y `curl`
 
 ```bash
 `r config$local$prompt` wget -O amdahl.tar.gz https://github.com/hpc-carpentry/amdahl/tarball/main
@@ -72,7 +73,8 @@ Use one of the above commands to save the tarball as `amdahl.tar.gz`.
 `r config$local$prompt` curl -o amdahl.tar.gz -L https://github.com/hpc-carpentry/amdahl/tarball/main
 ```
 
-The `-L` option to `curl` tells it to follow URL redirects (which `wget` does by default).
+La opción `-L` de `curl` le indica que siga las redirecciones de URL (lo cual `wget`
+hace por defecto).
 
 
 
@@ -80,44 +82,43 @@ The `-L` option to `curl` tells it to follow URL redirects (which `wget` does by
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
-After downloading the file, use `ls` to see it in your working directory:
+Después de descargar el archivo, usa `ls` para verlo en tu directorio de trabajo:
 
 ```bash
 `r config$local$prompt` ls
 ```
 
-## Archiving Files
+## Archivar archivos
 
-One of the biggest challenges we often face when transferring data between
-remote HPC systems is that of large numbers of files. There is an overhead to
-transferring each individual file and when we are transferring large numbers of
-files these overheads combine to slow down our transfers to a large degree.
+Uno de los mayores desafíos que enfrentamos al transferir datos entre sistemas
+HPC remotos es el gran número de archivos. Existe una sobrecarga al transferir
+cada archivo individual y, cuando transferimos grandes cantidades de archivos,
+esas sobrecargas se combinan y ralentizan nuestras transferencias en gran medida.
 
-The solution to this problem is to *archive* multiple files into smaller
-numbers of larger files before we transfer the data to improve our transfer
-efficiency.
-Sometimes we will combine archiving with *compression* to reduce the amount of
-data we have to transfer and so speed up the transfer.
-The most common archiving command you will use on a (Linux) HPC cluster is
-`tar`.
+La solución a este problema consiste en *archivar* múltiples archivos en un número 
+menor de archivos, pero más grandes, antes de transferir los datos. Esto con el 
+fin de mejorar la eficiencia de la transferencia. En ocasiones, combinaremos la 
+creación de archivos con *compresión* para reducir la cantidad de datos a 
+transferir y así acelerar el proceso. El comando de archivado más común que se 
+utiliza en un clúster HPC (Linux) es `tar`.
 
-`tar` can be used to combine files and folders into a single archive file and,
-optionally, compress the result.
-Let's look at the file we downloaded from the lesson site, `amdahl.tar.gz`.
+`tar` puede usarse para combinar archivos y carpetas en un solo archivo y,
+opcionalmente, comprimir el resultado.
+Veamos el archivo que descargamos del sitio de la lección, `amdahl.tar.gz`.
 
-The `.gz` part stands for *gzip*, which is a compression library.
-It's common (but not necessary!) that this kind of file can be interpreted by
-reading its name: it appears somebody took files and folders relating to
-something called "amdahl," wrapped them all up into a single file with `tar`,
-then compressed that archive with `gzip` to save space.
+La parte `.gz` significa *gzip*, que es una biblioteca de compresión.
+Es común (¡aunque no necesario!) que este tipo de archivo pueda interpretarse
+leyendo su nombre: parece que alguien tomó archivos y carpetas relacionados con
+algo llamado "amdahl", los empaquetó en un solo archivo con `tar`, y luego
+comprimió ese archivo con `gzip` para ahorrar espacio.
 
-Let's see if that is the case, *without* unpacking the file.
-`tar` prints the "**t**able of contents" with the `-t` flag, for the file
-specified with the `-f` flag followed by the filename.
-Note that you can concatenate the two flags: writing `-t -f` is interchangeable
-with writing `-tf` together.
-However, the argument following `-f` must be a filename, so writing `-ft` will
-*not* work.
+Veamos si ese es el caso, *sin* descomprimir el archivo.
+`tar` imprime la "**t**abla de contenidos" con la opción `-t`, para el archivo
+especificado con la opción `-f` seguida del nombre del archivo.
+Ten en cuenta que puedes concatenar las dos opciones: escribir `-t -f` es
+intercambiable con escribir `-tf` junto.
+Sin embargo, el argumento que sigue a `-f` debe ser un nombre de archivo, así
+que escribir `-ft` *no* funcionará.
 
 ```bash
 `r config$local$prompt` tar -tf amdahl.tar.gz
@@ -136,23 +137,23 @@ hpc-carpentry-amdahl-46c9b4b/requirements.txt
 hpc-carpentry-amdahl-46c9b4b/setup.py
 ```
 
-This example output shows a folder which contains a few files, where `46c9b4b`
-is an 8-character [git][git-swc] commit hash that will change when the source
-material is updated.
+Este ejemplo de salida muestra una carpeta que contiene algunos archivos, donde
+`46c9b4b` es un hash de commit de [git][git-swc] de 8 caracteres que cambiará
+cuando el material fuente se actualice.
 
-Now let's unpack the archive. We'll run `tar` with a few common flags:
+Ahora descomprimamos el archivo. Ejecutaremos `tar` con algunas opciones comunes:
 
-- `-x` to e**x**tract the archive
-- `-v` for **v**erbose output
-- `-z` for g**z**ip compression
-- `-f «tarball»` for the file to be unpacked
+- `-x` para e**x**traer el archivo
+- `-v` para salida **v**erbosa
+- `-z` para compresión g**z**ip
+- `-f «tarball»` para el archivo a descomprimir
 
 ::::::::::::::::::::::::::::::::::::::  discussion
 
-## Extract the Archive
+## Extraer el archivo
 
-Using the flags above, unpack the source code tarball into a new
-directory named "amdahl" using `tar`.
+Usando las opciones anteriores, descomprime el tarball del código fuente en un
+nuevo directorio llamado "amdahl" usando `tar`.
 
 ```bash
 `r config$local$prompt` tar -xvzf amdahl.tar.gz
@@ -174,23 +175,23 @@ hpc-carpentry-amdahl-46c9b4b/requirements.txt
 hpc-carpentry-amdahl-46c9b4b/setup.py
 ```
 
-Note that we did not need to type out `-x -v -z -f`, thanks to flag
-concatenation, though the command works identically either way --
-so long as the concatenated list ends with `f`, because the next string
-must specify the name of the file to extract.
+Ten en cuenta que no necesitamos escribir `-x -v -z -f`, gracias a la
+concatenación de opciones, aunque el comando funciona igual de cualquier forma,
+siempre y cuando la lista concatenada termine con `f`, porque la siguiente
+cadena debe especificar el nombre del archivo a extraer.
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
-The folder has an unfortunate name, so let's change that to something more
-convenient.
+La carpeta tiene un nombre poco conveniente, así que cambiémoslo por algo más
+práctico.
 
 ```bash
 `r config$local$prompt` mv hpc-carpentry-amdahl-46c9b4b amdahl
 ```
 
-Check the size of the extracted directory and compare to the compressed
-file size, using `du` for "**d**isk **u**sage".
+Verifica el tamaño del directorio extraído y compáralo con el tamaño del
+archivo comprimido, usando `du` para "uso de disco" (***d**isk **u**sage*).
 
 ```bash
 `r config$local$prompt` du -sh amdahl.tar.gz
@@ -199,12 +200,12 @@ file size, using `du` for "**d**isk **u**sage".
 48K    amdahl
 ```
 
-Text files (including Python source code) compress nicely:
-the "tarball" is one-sixth the total size of the raw data!
+Los archivos de texto (incluyendo el código fuente de Python) se comprimen bien:
+¡el "tarball" es una sexta parte del tamaño total de los datos en bruto!
 
-If you want to reverse the process -- compressing raw data instead of
-extracting it -- set a `c` flag instead of `x`, set the archive filename,
-then provide a directory to compress:
+Si quieres invertir el proceso, comprimiendo datos en bruto en lugar de
+extraerlos, usa la opción `c` en lugar de `x`, indica el nombre del archivo
+y luego proporciona un directorio para comprimir:
 
 ```bash
 `r config$local$prompt` tar -cvzf compressed_code.tar.gz amdahl
@@ -226,66 +227,70 @@ amdahl/requirements.txt
 amdahl/setup.py
 ```
 
-If you give `amdahl.tar.gz` as the filename in the above command, `tar` will
-update the existing tarball with any changes you made to the files.
-That would mean adding the new `amdahl` folder to the *existing* folder
-(`hpc-carpentry-amdahl-46c9b4b`) inside the tarball, doubling the size of the
-archive!
+Si proporcionas `amdahl.tar.gz` como nombre de archivo en el comando anterior,
+`tar` actualizará el tarball existente con cualquier cambio que hayas hecho en
+los archivos.
+Eso significaría agregar la nueva carpeta `amdahl` a la carpeta *existente*
+(`hpc-carpentry-amdahl-46c9b4b`) dentro del tarball, ¡duplicando el tamaño del
+archivo!
 
 :::::::::::::::::::::::::::::::::::::::::  callout
 
-## Working with Windows
+## Trabajar con Windows
 
-When you transfer text files from a Windows system to a Unix system (Mac,
-Linux, BSD, Solaris, etc.) this can cause problems. Windows encodes its files
-slightly different than Unix, and adds an extra character to every line.
+Cuando transfieres archivos de texto desde un sistema Windows a un sistema Unix
+(Mac, Linux, BSD, Solaris, etc.), esto puede causar problemas. Windows codifica
+sus archivos de forma ligeramente diferente a Unix y agrega un carácter extra
+en cada línea.
 
-On a Unix system, every line in a file ends with a `\n` (newline). On
-Windows, every line in a file ends with a `\r\n` (carriage return + newline).
-This causes problems sometimes.
+En un sistema Unix, cada línea de un archivo termina con un `\n` (nueva línea).
+En Windows, cada línea termina con un `\r\n` (retorno de carro (*carriage return*) + nueva línea).
+Esto a veces causa problemas.
 
-Though most modern programming languages and software handles this correctly,
-in some rare instances, you may run into an issue. The solution is to convert
-a file from Windows to Unix encoding with the `dos2unix` command.
+Aunque la mayoría de los lenguajes de programación y software modernos manejan
+esto correctamente, en algunos casos raros puedes encontrarte con un problema.
+La solución es convertir un archivo de codificación Windows a Unix con el
+comando `dos2unix`.
 
-You can identify if a file has Windows line endings with `cat -A filename`. A
-file with Windows line endings will have `^M$` at the end of every line. A
-file with Unix line endings will have `$` at the end of a line.
+Puedes identificar si un archivo tiene finales de línea de Windows con
+`cat -A filename`. Un archivo con finales de línea de Windows tendrá `^M$` al
+final de cada línea. Un archivo con finales de línea de Unix tendrá `$` al final
+de una línea.
 
-To convert the file, just run `dos2unix filename`. (Conversely, to convert
-back to Windows format, you can run `unix2dos filename`.)
+Para convertir el archivo, simplemente ejecuta `dos2unix filename`. (De forma
+contraria, para convertir de nuevo a formato Windows, puedes ejecutar
+`unix2dos filename`.)
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
-## Transferring Single Files and Folders With `scp`
+## Transferir archivos y carpetas individuales con `scp`
 
-To copy a single file to or from the cluster, we can use `scp` ("secure copy").
-The syntax can be a little complex for new users, but we'll break it down.
-The `scp` command is a relative of the `ssh` command we used to
-access the system, and can use the same public-key authentication
-mechanism.
+Para copiar un archivo individual hacia o desde el clúster, podemos usar `scp`
+("*secure copy*"). La sintaxis puede ser un poco compleja para usuarios nuevos,
+pero la desglosaremos. El comando `scp` es pariente del comando `ssh` que
+usamos para acceder al sistema y puede usar el mismo mecanismo de autenticación
+con clave pública.
 
-To *upload to* another computer, the template command is
+Para *subir a* otra computadora, el comando plantilla es
 
 ```bash
 `r config$local$prompt` scp local_file `r config$remote$user`@`r config$remote$login`:remote_destination
 ```
 
-in which `@` and `:` are field separators and `remote_destination` is a path
-relative to your remote home directory, or a new filename if you wish to change
-it, or both a relative path *and* a new filename.
-If you don't have a specific folder in mind you can omit the
-`remote_destination` and the file will be copied to your home directory on the
-remote computer (with its original name).
-If you include a `remote_destination`, note that `scp` interprets this the same
-way `cp` does when making local copies:
-if it exists and is a folder, the file is copied inside the folder; if it
-exists and is a file, the file is overwritten with the contents of
-`local_file`; if it does not exist, it is assumed to be a destination filename
-for `local_file`.
+en el que `@` y `:` son separadores de campos y `remote_destination` es una ruta
+relativa a tu directorio personal remoto, o un nuevo nombre de archivo si deseas
+cambiarlo, o tanto una ruta relativa *como* un nuevo nombre de archivo.
+Si no tienes una carpeta específica en mente, puedes omitir
+`remote_destination` y el archivo se copiará a tu directorio personal en la
+computadora remota (con su nombre original).
+Si incluyes un `remote_destination`, ten en cuenta que `scp` interpreta esto de
+la misma manera que `cp` al hacer copias locales:
+si existe y es una carpeta, el archivo se copia dentro de la carpeta; si existe
+y es un archivo, el archivo se sobrescribe con el contenido de `local_file`; si
+no existe, se asume que es un nombre de destino para `local_file`.
 
-Upload the lesson material to your remote home directory like so:
+Sube el material de la lección a tu directorio personal remoto así:
 
 ```bash
 `r config$local$prompt` scp amdahl.tar.gz `r config$remote$user`@`r config$remote$login`:
@@ -293,21 +298,21 @@ Upload the lesson material to your remote home directory like so:
 
 :::::::::::::::::::::::::::::::::::::::  challenge
 
-## Why Not Download on `r config$remote$name` Directly?
+## ¿Por qué no descargar directamente en `r config$remote$name`?
 
-Most computer clusters are protected from the open internet by a *firewall*.
-For enhanced security, some are configured to allow traffic *inbound*, but
-not *outbound*.
-This means that an authenticated user can send a file to a cluster machine,
-but a cluster machine cannot retrieve files from a user's machine or the
-open Internet.
+La mayoría de los clústeres de computadoras están protegidos del Internet
+abierto por un *firewall*. Para mayor seguridad, algunos están configurados para
+permitir tráfico *entrante*, pero no *saliente*.
+Esto significa que una persona usuaria autenticada puede enviar un archivo a una
+máquina del clúster, pero una máquina del clúster no puede recuperar archivos
+desde la máquina de una persona usuaria ni desde Internet abierto.
 
-Try downloading the file directly. Note that it may well fail, and that's
-OK!
+Intenta descargar el archivo directamente. Ten en cuenta que puede fallar, y
+¡está bien!
 
 :::::::::::::::  solution
 
-## Commands
+## Comandos
 
 ```bash
 `r config$local$prompt` ssh `r config$remote$user`@`r config$remote$login`
@@ -318,18 +323,17 @@ OK!
 
 :::::::::::::::::::::::::
 
-Did it work? If not, what does the terminal output tell you about what
-happened?
+¿Funcionó? Si no, ¿qué muestra la terminal sobre lo que pasó?
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
-## Transferring a Directory
+## Transferir un directorio
 
-To transfer an entire directory, we add the `-r` flag for "**r**ecursive":
-copy the item specified, and every item below it, and every item below those...
-until it reaches the bottom of the directory tree rooted at the folder name you
-provided.
+Para transferir un directorio completo, añadimos la opción `-r` de "**r**ecursivo": 
+esto copia el elemento especificado, todos los elementos que contiene y todos los 
+elementos de sus subdirectorios... hasta llegar al final del árbol de directorios 
+que tiene como raíz la carpeta que indicaste.
 
 ```bash
 `r config$local$prompt` scp -r amdahl `r config$remote$user`@`r config$remote$login`:
@@ -337,76 +341,78 @@ provided.
 
 :::::::::::::::::::::::::::::::::::::::::  callout
 
-## Caution
+## Precaución
 
-For a large directory -- either in size or number of files --
-copying with `-r` can take a long time to complete.
+Para un directorio grande, ya sea por tamaño o número de archivos, copiar con
+`-r` puede tardar mucho en completarse.
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
-When using `scp`, you may have noticed that a `:` *always* follows the remote
-computer name.
-A string *after* the `:` specifies the remote directory you wish to transfer
-the file or folder to, including a new name if you wish to rename the remote
-material.
-If you leave this field blank, `scp` defaults to your home directory and the
-name of the local material to be transferred.
+Al usar `scp`, quizá hayas notado que un `:` *siempre* sigue al nombre de la
+computadora remota.
+Una cadena *después* de `:` especifica el directorio remoto al que deseas
+transferir el archivo o carpeta, incluyendo un nuevo nombre si deseas renombrar
+el material remoto.
+Si dejas este campo en blanco, `scp` usa por defecto tu directorio personal y
+el nombre del material local a transferir.
 
-On Linux computers, `/` is the separator in file or directory paths.
-A path starting with a `/` is called *absolute*, since there can be nothing
-above the root `/`.
-A path that does not start with `/` is called *relative*, since it is not
-anchored to the root.
+En computadoras Linux, `/` es el separador en rutas de archivos o directorios.
+Una ruta que comienza con `/` se llama *absoluta*, ya que no puede haber nada
+por encima de la raíz `/`.
+Una ruta que no comienza con `/` se llama *relativa*, ya que no está anclada a
+la raíz.
 
-If you want to upload a file to a location inside your home directory --
-which is often the case -- then you don't need a *leading* `/`. After the `:`,
-you can type the destination path relative to your home directory.
-If your home directory *is* the destination, you can leave the destination
-field blank, or type `~` -- the shorthand for your home directory -- for
-completeness.
+Si quieres subir un archivo a una ubicación dentro de tu directorio personal,
+que suele ser el caso, entonces no necesitas un `/` *inicial*. Después de `:`
+puedes escribir la ruta de destino relativa a tu directorio personal.
+Si tu directorio personal *es* el destino, puedes dejar el campo de destino en
+blanco o escribir `~`, el atajo para tu directorio personal, por completitud.
 
-With `scp`, a trailing slash on the target directory is optional, and has no effect.
-A trailing slash on a source directory is important for other commands, like `rsync`.
+Con `scp`, una barra final en el directorio de destino es opcional y no tiene
+efecto. Una barra final en un directorio de origen es importante para otros
+comandos, como `rsync`.
 
 :::::::::::::::::::::::::::::::::::::::::  callout
 
-## A Note on `rsync`
+## Una nota sobre `rsync`
 
-As you gain experience with transferring files, you may find the `scp`
-command limiting. The [rsync] utility provides
-advanced features for file transfer and is typically faster compared to both
-`scp` and `sftp` (see below). It is especially useful for transferring large
-and/or many files and for synchronizing folder contents between computers.
+A medida que ganas experiencia transfiriendo archivos, es posible que el
+comando `scp` te resulte limitado. La herramienta [rsync] proporciona funciones
+avanzadas para transferir archivos y normalmente es más rápida que `scp` y
+`sftp` (ver más abajo). Es especialmente útil para transferir archivos grandes
+y/o muchos archivos, y para sincronizar el contenido de carpetas entre
+computadoras.
 
-The syntax is similar to `scp`. To transfer *to* another computer with
-commonly used options:
+La sintaxis es similar a `scp`. Para transferir *a* otra computadora con las
+opciones más usadas:
 
 ```bash
 `r config$local$prompt` rsync -avP amdahl.tar.gz `r config$remote$user`@`r config$remote$login`:
 ```
 
-The options are:
+Las opciones son:
 
-- `-a` (**a**rchive) to preserve file timestamps, permissions, and folders,
-  among other things; implies recursion
-- `-v` (**v**erbose) to get verbose output to help monitor the transfer
-- `-P` (partial/progress) to preserve partially transferred files in case
-  of an interruption and also displays the progress of the transfer.
+- `-a` (**a**rchivo) para preservar marcas de tiempo, permisos y carpetas, entre
+  otras cosas; implica recursión
+- `-v` (**v**erboso) para obtener salida detallada y ayudar a monitorear la
+  transferencia
+- `-P` (partial/progress) para conservar archivos parcialmente transferidos en
+  caso de interrupción y también mostrar el progreso de la transferencia.
 
-To recursively copy a directory, we can use the same options:
+Para copiar un directorio de forma recursiva, podemos usar las mismas opciones:
 
 ```bash
 `r config$local$prompt` rsync -avP amdahl `r config$remote$user`@`r config$remote$login`:~/
 ```
 
-As written, this will place the local directory and its contents under your
-home directory on the remote system. If a trailing slash is added to the
-source, a new directory corresponding to the transferred directory
-will not be created, and the contents of the source directory will be
-copied directly into the destination directory.
+Tal como está escrito, esto colocará el directorio local y su contenido dentro
+de tu directorio personal en el sistema remoto. Si se agrega una barra final al
+origen, no se creará un nuevo directorio correspondiente al directorio
+transferido, y el contenido del directorio de origen se copiará directamente en
+el directorio de destino.
 
-To download a file, we simply change the source and destination:
+Para descargar un archivo, simplemente cambiamos el origen y el destino:
 
 ```bash
 `r config$local$prompt` rsync -avP `r config$remote$user`@`r config$remote$login`:amdahl ./
@@ -414,28 +420,29 @@ To download a file, we simply change the source and destination:
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
-File transfers using both `scp` and `rsync` use SSH to encrypt data sent through
-the network. So, if you can connect via SSH, you will be able to transfer
-files. By default, SSH uses network port 22. If a custom SSH port is in use,
-you will have to specify it using the appropriate flag, often `-p`, `-P`, or
-`--port`. Check `--help` or the `man` page if you're unsure.
+Las transferencias de archivos con `scp` y `rsync` usan SSH para cifrar los
+datos enviados por la red. Así que, si puedes conectarte por SSH, podrás
+transferir archivos. Por defecto, SSH usa el puerto de red 22. Si se usa un
+puerto SSH personalizado, tendrás que especificarlo con la opción adecuada,
+frecuentemente `-p`, `-P` o `--port`. Revisa `--help` o la página `man` si no
+estás seguro.
 
 :::::::::::::::::::::::::::::::::::::::  challenge
 
-## Change the Rsync Port
+## Cambiar el puerto de rsync
 
-Say we have to connect `rsync` through port 768 instead of 22. How would we
-modify this command?
+Supongamos que tenemos que conectar `rsync` a través del puerto 768 en lugar de
+22. ¿Cómo modificarías este comando?
 
 ```bash
 `r config$local$prompt` rsync amdahl.tar.gz `r config$remote$user`@`r config$remote$login`:
 ```
 
-*Hint:* check the `man` page or "help" for `rsync`.
+*Pista:* revisa la página `man` o la "ayuda" de `rsync`.
 
 :::::::::::::::  solution
 
-## Solution
+## Solución
 
 ```bash
 `r config$local$prompt` man rsync
@@ -445,8 +452,8 @@ See http://rsync.samba.org/ for updates, bug reports, and answers
 `r config$local$prompt` rsync --port=768 amdahl.tar.gz `r config$remote$user`@`r config$remote$login`:
 ```
 
-(Note that this command will fail, as the correct port in this case is the
-default: 22.)
+(Ten en cuenta que este comando fallará, ya que el puerto correcto en este caso
+es el predeterminado: 22.)
 
 
 
@@ -454,46 +461,46 @@ default: 22.)
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
-## Transferring Files Interactively with FileZilla
+## Transferir archivos de forma interactiva con FileZilla
 
-FileZilla is a cross-platform client for downloading and uploading files to and
-from a remote computer. It is absolutely fool-proof and always works quite
-well. It uses the `sftp` protocol. You can read more about using the `sftp`
-protocol in the command line in the
-[lesson discussion](../learners/discuss.md).
+FileZilla es un cliente multiplataforma para descargar y subir archivos hacia y
+desde una computadora remota. Es totalmente a prueba de fallos y siempre
+funciona bastante bien. Usa el protocolo `sftp`. Puedes leer más sobre el uso
+del protocolo `sftp` en la línea de comandos en la
+[discusión de la lección](../learners/discuss.md).
 
-Download and install the FileZilla client from <https://filezilla-project.org>.
-After installing and opening the program, you should end up with a window with
-a file browser of your local system on the left hand side of the screen. When
-you connect to the cluster, your cluster files will appear on the right hand
-side.
+Descarga e instala el cliente FileZilla desde <https://filezilla-project.org>.
+Después de instalar y abrir el programa, deberías ver una ventana con un
+explorador de archivos de tu sistema local en el lado izquierdo de la pantalla.
+Cuando te conectes al clúster, tus archivos del clúster aparecerán en el lado
+derecho.
 
-To connect to the cluster, we'll just need to enter our credentials at the top
-of the screen:
+Para conectarte al clúster, solo necesitas ingresar tus credenciales en la
+parte superior de la pantalla:
 
 - Host: `sftp://`r config$remote$login``
-- User: Your cluster username
-- Password: Your cluster password
-- Port: (leave blank to use the default port)
+- User: Tu nombre de usuario del clúster
+- Password: Tu contraseña del clúster
+- Port: (deja en blanco para usar el puerto predeterminado)
 
-Hit "Quickconnect" to connect. You should see your remote files appear on the
-right hand side of the screen. You can drag-and-drop files between the left
-(local) and right (remote) sides of the screen to transfer files.
+Haz clic en "Quickconnect" para conectar. Deberías ver tus archivos remotos en
+el lado derecho de la pantalla. Puedes arrastrar y soltar archivos entre el
+lado izquierdo (local) y el derecho (remoto) de la pantalla para transferirlos.
 
-Finally, if you need to move large files (typically larger than a gigabyte)
-from one remote computer to another remote computer, SSH in to the computer
-hosting the files and use `scp` or `rsync` to transfer over to the other. This
-will be more efficient than using FileZilla (or related applications) that
-would copy from the source to your local machine, then to the destination
-machine.
+Por último, si necesitas mover archivos grandes (típicamente mayores a un
+gigabyte) de una computadora remota a otra computadora remota, entra por SSH a
+la computadora que hospeda los archivos y usa `scp` o `rsync` para transferirlos
+a la otra. Esto será más eficiente que usar FileZilla (o aplicaciones
+relacionadas) que copiarían desde el origen a tu máquina local y luego a la
+máquina de destino.
 
 [git-swc]: https://swcarpentry.github.io/git-novice/
 [rsync]: https://rsync.samba.org/
 
 :::::::::::::::::::::::::::::::::::::::: keypoints
 
-- `wget` and `curl -O` download a file from the internet.
-- `scp` and `rsync` transfer files to and from your computer.
-- You can use an SFTP client like FileZilla to transfer files through a GUI.
+- `wget` y `curl -O` descargan un archivo desde Internet.
+- `scp` y `rsync` transfieren archivos hacia y desde tu computadora.
+- Puedes usar un cliente SFTP como FileZilla para transferir archivos con una GUI.
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::

@@ -1,5 +1,5 @@
 ---
-title: "Scheduler Fundamentals"
+title: "Fundamentos del Planificador de Trabajos"
 teaching: 45
 exercises: 30
 ---
@@ -11,64 +11,65 @@ source("load_config.R")
 
 ::::::::::::::::::::::::::::::::::::::: objectives
 
-- Submit a simple script to the cluster.
-- Monitor the execution of jobs using command line tools.
-- Inspect the output and error files of your jobs.
-- Find the right place to put large datasets on the cluster.
+- Enviar un script simple al clúster.
+- Monitorear la ejecución de trabajos usando herramientas de línea de comandos.
+- Inspeccionar los archivos de salida y error de tus trabajos.
+- Encontrar el lugar adecuado para poner conjuntos de datos grandes en el clúster.
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
 :::::::::::::::::::::::::::::::::::::::: questions
 
-- What is a scheduler and why does a cluster need one?
-- How do I launch a program to run on a compute node in the cluster?
-- How do I capture the output of a program that is run on a node in the cluster?
+- ¿Qué es un planificador de trabajos y por qué lo necesita un clúster?
+- ¿Cómo lanzo un programa para que se ejecute en un nodo de cómputo del clúster?
+- ¿Cómo capturo la salida de un programa que se ejecuta en un nodo del clúster?
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
-## Job Scheduler
+## Planificador de trabajos
 
-An HPC system might have thousands of nodes and thousands of users. How do we
-decide who gets what and when? How do we ensure that a task is run with the
-resources it needs? This job is handled by a special piece of software called
-the *scheduler*. On an HPC system, the scheduler manages which jobs run where
-and when.
+Un sistema HPC puede tener miles de nodos y miles de usuarios. ¿Cómo decidimos
+quién obtiene qué y cuándo? ¿Cómo aseguramos que una tarea se ejecute con los
+recursos que necesita? Este trabajo lo realiza un software especial llamado
+*gestor de colas* o *planificador*. En un sistema HPC, el planificador gestiona qué trabajos se
+ejecutan, dónde y cuándo.
 
-The following illustration compares these tasks of a job scheduler to a waiter
-in a restaurant. If you can relate to an instance where you had to wait for a
-while in a queue to get in to a popular restaurant, then you may now understand
-why sometimes your job do not start instantly as in your laptop.
+La siguiente ilustración compara estas tareas de un planificador de trabajos
+con un mesero en un restaurante. Si puedes relacionarlo con alguna ocasión en
+la que tuviste que esperar en una fila para entrar a un restaurante popular,
+entonces puedes entender por qué a veces tu trabajo no inicia de inmediato
+como en tu laptop.
 
-![](fig/restaurant_queue_manager.svg){alt="Compare a job scheduler to a waiter in a restaurant" max-width="75%"}
+![](fig/restaurant_queue_manager.svg){alt="Comparar un planificador de trabajos con un mesero en un restaurante" max-width="75%"}
 
-The scheduler used in this lesson is `r config$sched$name`. Although
-`r config$sched$name` is not used everywhere, running jobs is quite similar
-regardless of what software is being used. The exact syntax might change, but
-the concepts remain the same.
+El planificador usado en esta lección es `r config$sched$name`. Aunque
+`r config$sched$name` no se usa en todos lados, ejecutar trabajos es bastante
+similar sin importar el software que se utilice. La sintaxis exacta puede
+cambiar, pero los conceptos permanecen iguales.
 
-## Running a Batch Job
+## Ejecutar un trabajo por lotes (batch)
 
-The most basic use of the scheduler is to run a command non-interactively. Any
-command (or series of commands) that you want to run on the cluster is called a
-*job*, and the process of using a scheduler to run the job is called *batch job
-submission*.
+El uso más básico del planificador es ejecutar un comando de forma no
+interactiva. Cualquier comando (o serie de comandos) que quieras ejecutar en el
+clúster se llama *trabajo*, y el proceso de usar un planificador para ejecutar
+el trabajo se llama *envío de trabajos por lotes* o *batch job submission*.
 
-In this case, the job we want to run is a shell script -- essentially a
-text file containing a list of UNIX commands to be executed in a sequential
-manner. Our shell script will have three parts:
+En este caso, el trabajo que queremos ejecutar es un script de shell: en
+esencia, un archivo de texto que contiene una lista de comandos UNIX que se
+ejecutan de manera secuencial. Nuestro script tendrá tres partes:
 
-- On the very first line, add ``r config$remote$shebang``. The `#!`
-  (pronounced "hash-bang" or "shebang") tells the computer what program is
-  meant to process the contents of this file. In this case, we are telling it
-  that the commands that follow are written for the command-line shell (what
-  we've been doing everything in so far).
-- Anywhere below the first line, we'll add an `echo` command with a friendly
-  greeting. When run, the shell script will print whatever comes after `echo`
-  in the terminal.
-  - `echo -n` will print everything that follows, *without* ending
-    the line by printing the new-line character.
-- On the last line, we'll invoke the `hostname` command, which will print the
-  name of the machine the script is run on.
+- En la primera línea, agrega ``r config$remote$shebang``. El `#!`
+  (pronunciado "hash-bang" o "shebang") le dice a la computadora qué programa
+  debe procesar el contenido de este archivo. En este caso, le indicamos que
+  los comandos que siguen están escritos para la shell de línea de comandos (la
+  que hemos estado usando hasta ahora).
+- En cualquier lugar debajo de la primera línea, agregaremos un comando `echo`
+  con un saludo amistoso. Al ejecutarse, el script imprimirá en la terminal
+  todo lo que venga después de `echo`.
+  - `echo -n` imprimirá todo lo que sigue, *sin* terminar la línea con el
+    carácter de nueva línea.
+- En la última línea, invocaremos el comando `hostname`, que imprimirá el
+  nombre de la máquina donde se ejecuta el script.
 
 ```bash
 `r config$remote$prompt` nano example-job.sh
@@ -83,13 +84,13 @@ hostname
 
 :::::::::::::::::::::::::::::::::::::::  challenge
 
-## Creating Our Test Job
+## Creando nuestro trabajo de prueba
 
-Run the script. Does it execute on the cluster or just our login node?
+Ejecuta el script. ¿Se ejecuta en el clúster o solo en nuestro nodo de acceso?
 
 :::::::::::::::  solution
 
-## Solution
+## Solución
 
 ```bash
 `r config$remote$prompt` bash example-job.sh
@@ -103,15 +104,15 @@ This script is running on `r config$remote$host`
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
-This script ran on the login node, but we want to take advantage of
-the compute nodes: we need the scheduler to queue up `example-job.sh`
-to run on a compute node.
+Este script se ejecutó en el nodo de acceso, pero queremos aprovechar los
+nodos de cómputo: necesitamos que el planificador ponga `example-job.sh` en
+cola para ejecutarlo en un nodo de cómputo.
 
-To submit this task to the scheduler, we use the
-``r config$sched$submit$name`` command.
-This creates a *job* which will run the *script* when *dispatched* to
-a compute node which the queuing system has identified as being
-available to perform the work.
+Para enviar esta tarea al planificador, usamos el comando
+``r config$sched$submit$name``.
+Esto crea un *trabajo* que ejecutará el *script* cuando sea *despachado* a un
+nodo de cómputo que el sistema de colas ha identificado como disponible para
+realizar el trabajo.
 
 ```bash
 `r config$remote$prompt` `r config$sched$submit$name` `r config$sched$submit$options` example-job.sh
@@ -121,11 +122,11 @@ available to perform the work.
 snippets('scheduler/basic-job-script.Rmd')
 ```
 
-And that's all we need to do to submit a job. Our work is done -- now the
-scheduler takes over and tries to run the job for us. While the job is waiting
-to run, it goes into a list of jobs called the *queue*. To check on our job's
-status, we check the queue using the command
-``r config$sched$status` `r config$sched$flag$user``.
+Y eso es todo lo que necesitamos para enviar un trabajo. Nuestro trabajo está
+hecho: ahora el planificador se encarga y trata de ejecutarlo por nosotros.
+Mientras el trabajo espera para ejecutarse, entra en una lista de trabajos
+llamada *cola*. Para revisar el estado del trabajo, consultamos la cola con el
+comando ``r config$sched$status` `r config$sched$flag$user``.
 
 ```bash
 `r config$remote$prompt` `r config$sched$status` `r config$sched$flag$user`
@@ -136,44 +137,45 @@ JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
     9 cpubase_b example-   user01  R       0:05      1 node1
 ```
 
-We can see all the details of our job, most importantly that it is in the `R`
-or `RUNNING` state. Sometimes our jobs might need to wait in a queue
-(`PENDING`) or have an error (`E`).
+Podemos ver todos los detalles de nuestro trabajo, y lo más importante es que
+está en estado `R` o `RUNNING`. A veces nuestros trabajos deben esperar en la
+cola (`PENDING`) o presentar un error (`E`).
 
 ::::::::::::::::::::::::::::::::::::::  discussion
 
-## Where's the Output?
+## ¿Dónde está la salida?
 
-On the login node, this script printed output to the terminal -- but
-now, when ``r config$sched$status`` shows the job has finished,
-nothing was printed to the terminal.
+En el nodo de acceso, este script imprimió la salida en la terminal, pero
+ahora, cuando ``r config$sched$status`` muestra que el trabajo terminó,
+no se imprimió nada en la terminal.
 
-Cluster job output is typically redirected to a file in the directory you
-launched it from. Use `ls` to find and `cat` to read the file.
+La salida de un trabajo en el clúster normalmente se redirige a un archivo en
+el directorio desde el que lo lanzaste. Usa `ls` para encontrarlo y `cat` para
+leerlo.
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
-## Customising a Job
+## Personalizar un trabajo
 
-The job we just ran used all of the scheduler's default options. In a
-real-world scenario, that's probably not what we want. The default options
-represent a reasonable minimum. Chances are, we will need more cores, more
-memory, more time, among other special considerations. To get access to these
-resources we must customize our job script.
+El trabajo que acabamos de ejecutar usó todas las opciones predeterminadas del
+planificador. En un escenario real, probablemente no es lo que queremos. Las
+opciones predeterminadas representan un mínimo razonable. Es probable que
+necesitemos más núcleos, más memoria, más tiempo, entre otras consideraciones
+especiales. Para acceder a esos recursos debemos personalizar nuestro script.
 
-Comments in UNIX shell scripts (denoted by `#`) are typically ignored, but
-there are exceptions. For instance the special `#!` comment at the beginning of
-scripts specifies what program should be used to run it (you'll typically see
-``r config$local$shebang``). Schedulers like `r config$sched$name` also
-have a special comment used to denote special scheduler-specific options.
-Though these comments differ from scheduler to scheduler,
-`r config$sched$name`'s special comment is ``r config$sched$comment``. Anything
-following the ``r config$sched$comment`` comment is interpreted as an
-instruction to the scheduler.
+Los comentarios en scripts de shell UNIX (marcados con `#`) normalmente se
+ignoran, pero hay excepciones. Por ejemplo, el comentario especial `#!` al
+inicio de los scripts especifica qué programa debe usarse para ejecutarlo
+(normalmente verás ``r config$local$shebang``). Planificadores como
+`r config$sched$name` también tienen un comentario especial que se usa para
+indicar opciones específicas del planificador. Aunque estos comentarios difieren
+entre planificadores, el comentario especial de `r config$sched$name` es
+``r config$sched$comment``. Cualquier cosa que siga al comentario
+``r config$sched$comment`` se interpreta como una instrucción al planificador.
 
-Let's illustrate this by example. By default, a job's name is the name of the
-script, but the ``r config$sched$flag$name`` option can be used to change the
-name of a job. Add an option to the script:
+Ilustremos esto con un ejemplo. Por defecto, el nombre de un trabajo es el
+nombre del script, pero la opción ``r config$sched$flag$name`` se puede usar
+para cambiar el nombre de un trabajo. Agrega una opción al script:
 
 ```bash
 `r config$remote$prompt` cat example-job.sh
@@ -187,7 +189,7 @@ echo -n "This script is running on "
 hostname
 ```
 
-Submit the job and monitor its status:
+Envía el trabajo y monitorea su estado:
 
 ```bash
 `r config$remote$prompt` `r config$sched$submit$name` `r config$sched$submit$options` example-job.sh
@@ -199,55 +201,56 @@ JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
    10 cpubase_b hello-wo   user01  R       0:02      1 node1
 ```
 
-Fantastic, we've successfully changed the name of our job!
+¡Excelente, cambiamos con éxito el nombre de nuestro trabajo!
 
-### Resource Requests
+### Solicitudes de recursos
 
-What about more important changes, such as the number of cores and memory for
-our jobs? One thing that is absolutely critical when working on an HPC system
-is specifying the resources required to run a job. This allows the scheduler to
-find the right time and place to schedule our job. If you do not specify
-requirements (such as the amount of time you need), you will likely be stuck
-with your site's default resources, which is probably not what you want.
+¿Qué hay de cambios más importantes, como el número de núcleos y la memoria
+para nuestros trabajos? Algo absolutamente crítico cuando trabajamos en un
+sistema HPC es especificar los recursos necesarios para ejecutar un trabajo.
+Esto permite que el planificador encuentre el momento y el lugar adecuados para
+programar nuestro trabajo. Si no especificas requisitos (como el tiempo que
+necesitas), probablemente quedarás limitado a los recursos predeterminados de
+tu sitio, lo cual no es lo que deseas.
 
-The following are several key resource requests:
+Estas son algunas solicitudes clave de recursos:
 
-- `--ntasks=<ntasks>` or `-n <ntasks>`: How many CPU cores does your job need,
-  in total?
+- `--ntasks=<ntasks>` o `-n <ntasks>`: ¿Cuántos núcleos de CPU necesita tu
+  trabajo en total?
 
-- `--time <days-hours:minutes:seconds>` or `-t <days-hours:minutes:seconds>`:
-  How much real-world time (walltime) will your job take to run? The `<days>`
-  part can be omitted.
+- `--time <days-hours:minutes:seconds>` o `-t <days-hours:minutes:seconds>`:
+  ¿Cuánto tiempo real (walltime) tardará en ejecutarse tu trabajo? La parte
+  `<days>` se puede omitir.
 
-- `--mem=<megabytes>`: How much memory on a node does your job need in
-  megabytes? You can also specify gigabytes using by adding a little "g"
-  afterwards (example: `--mem=5g`)
+- `--mem=<megabytes>`: ¿Cuánta memoria en un nodo necesita tu trabajo en
+  megabytes? También puedes especificar gigabytes añadiendo una "g"
+  después (ejemplo: `--mem=5g`)
 
-- `--nodes=<nnodes>` or `-N <nnodes>`: How many separate machines does your job
-  need to run on? Note that if you set `ntasks` to a number greater than what
-  one machine can offer, `r config$sched$name` will set this value
-  automatically.
+- `--nodes=<nnodes>` o `-N <nnodes>`: ¿En cuántas máquinas separadas necesita
+  ejecutarse tu trabajo? Ten en cuenta que si estableces `ntasks` en un número
+  mayor que lo que puede ofrecer una sola máquina, `r config$sched$name`
+  ajustará este valor automáticamente.
 
-Note that just *requesting* these resources does not make your job run faster,
-nor does it necessarily mean that you will consume all of these resources. It
-only means that these are made available to you. Your job may end up using less
-memory, or less time, or fewer nodes than you have requested, and it will still
-run.
+Ten en cuenta que solo *solicitar* estos recursos no hace que tu trabajo corra
+más rápido, ni significa necesariamente que consumirás todos esos recursos. Solo
+significa que se ponen a tu disposición. Tu trabajo puede terminar usando menos
+memoria, menos tiempo o menos nodos de los que solicitaste, y aun así se
+ejecutará.
 
-It's best if your requests accurately reflect your job's requirements. We'll
-talk more about how to make sure that you're using resources effectively in a
-later episode of this lesson.
+Es mejor que tus solicitudes reflejen con precisión los requisitos de tu
+trabajo. Hablaremos más sobre cómo asegurarte de usar los recursos de manera
+efectiva en un episodio posterior de esta lección.
 
 :::::::::::::::::::::::::::::::::::::::  challenge
 
-## Submitting Resource Requests
+## Enviar solicitudes de recursos
 
-Modify our `hostname` script so that it runs for a minute, then submit a job
-for it on the cluster.
+Modifica nuestro script `hostname` para que se ejecute durante un minuto, y
+luego envía un trabajo para él en el clúster.
 
 :::::::::::::::  solution
 
-## Solution
+## Solución
 
 ```bash
 `r config$remote$prompt` cat example-job.sh
@@ -266,7 +269,8 @@ hostname
 `r config$remote$prompt` `r config$sched$submit$name` `r config$sched$submit$options` example-job.sh
 ```
 
-Why are the `r config$sched$name` runtime and `sleep` time not identical?
+¿Por qué el tiempo de ejecución de `r config$sched$name` y el tiempo de `sleep`
+no son idénticos?
 
 
 
@@ -274,9 +278,9 @@ Why are the `r config$sched$name` runtime and `sleep` time not identical?
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
-Resource requests are typically binding. If you exceed them, your job will be
-killed. Let's use wall time as an example. We will request 1 minute of
-wall time, and attempt to run a job for two minutes.
+Las solicitudes de recursos suelen ser obligatorias. Si las excedes, tu trabajo
+será terminado. Usemos el tiempo de ejecución real (*wall time*) como ejemplo. Solicitaremos 1 minuto
+de tiempo real e intentaremos ejecutar un trabajo durante dos minutos.
 
 ```bash
 `r config$remote$prompt` cat example-job.sh
@@ -292,8 +296,8 @@ sleep 240 # time in seconds
 hostname
 ```
 
-Submit the job and wait for it to finish. Once it is has finished, check the
-log file.
+Envía el trabajo y espera a que termine. Una vez que haya terminado, revisa el
+archivo de registro.
 
 ```bash
 `r config$remote$prompt` `r config$sched$submit$name` `r config$sched$submit$options` example-job.sh
@@ -310,23 +314,25 @@ slurmstepd: error: *** JOB 12 ON node1 CANCELLED AT 2021-02-19T13:55:57
 DUE TO TIME LIMIT ***
 ```
 
-Our job was killed for exceeding the amount of resources it requested. Although
-this appears harsh, this is actually a feature. Strict adherence to resource
-requests allows the scheduler to find the best possible place for your jobs.
-Even more importantly, it ensures that another user cannot use more resources
-than they've been given. If another user messes up and accidentally attempts to
-use all of the cores or memory on a node, `r config$sched$name` will either
-restrain their job to the requested resources or kill the job outright. Other
-jobs on the node will be unaffected. This means that one user cannot mess up
-the experience of others, the only jobs affected by a mistake in scheduling
-will be their own.
+Nuestro trabajo fue terminado por exceder la cantidad de recursos solicitados.
+Aunque esto parezca duro, en realidad es una característica. El cumplimiento
+estricto de las solicitudes de recursos permite que el planificador encuentre
+el mejor lugar posible para tus trabajos. Aún más importante, asegura que otra
+persona usuaria no pueda usar más recursos de los que se le asignaron. Si otra
+persona se equivoca y accidentalmente intenta usar todos los núcleos o la
+memoria de un nodo, `r config$sched$name` restringirá su trabajo a los recursos
+solicitados o lo terminará de inmediato. Los otros trabajos en el nodo no se
+verán afectados. Esto significa que una persona no puede arruinar la experiencia
+de las demás; los únicos trabajos afectados por un error en la planificación
+serán los suyos.
 
-## Cancelling a Job
+## Cancelar un trabajo
 
-Sometimes we'll make a mistake and need to cancel a job. This can be done with
-the ``r config$sched$del`` command. Let's submit a job and then cancel it using
-its job number (remember to change the walltime so that it runs long enough for
-you to cancel it before it is killed!).
+A veces cometeremos un error y necesitaremos cancelar un trabajo. Esto se puede
+hacer con el comando ``r config$sched$del``. Enviemos un trabajo y luego
+cancelémoslo usando su número de trabajo (recuerda cambiar el tiempo de ejecución real (*wall time*)
+para que se ejecute lo suficiente como para cancelarlo antes de que sea
+terminado).
 
 ```bash
 `r config$remote$prompt` `r config$sched$submit$name` `r config$sched$submit$options` example-job.sh
@@ -340,9 +346,8 @@ JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
    13 cpubase_b long_job   user01  R       0:02      1 node1
 ```
 
-Now cancel the job with its job number (printed in your terminal). A clean
-return of your command prompt indicates that the request to cancel the job was
-successful.
+Ahora cancela el trabajo con su número (impreso en tu terminal). El retorno
+limpio del prompt indica que la solicitud de cancelación fue exitosa.
 
 ```bash
 `r config$remote$prompt` `r config$sched$del` 38759
@@ -356,19 +361,19 @@ JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
 
 :::::::::::::::::::::::::::::::::::::::  challenge
 
-## Cancelling multiple jobs
+## Cancelar múltiples trabajos
 
-We can also cancel all of our jobs at once using the `-u` option. This will
-delete all jobs for a specific user (in this case, yourself). Note that you
-can only delete your own jobs.
+También podemos cancelar todos nuestros trabajos a la vez usando la opción
+`-u`. Esto eliminará todos los trabajos de una persona usuaria específica (en
+este caso, tú). Ten en cuenta que solo puedes eliminar tus propios trabajos.
 
-Try submitting multiple jobs and then cancelling them all.
+Intenta enviar varios trabajos y luego cancelarlos todos.
 
 :::::::::::::::  solution
 
-## Solution
+## Solución
 
-First, submit a trio of jobs:
+Primero, envía un trío de trabajos:
 
 ```bash
 `r config$remote$prompt` `r config$sched$submit$name` `r config$sched$submit$options` example-job.sh
@@ -376,7 +381,7 @@ First, submit a trio of jobs:
 `r config$remote$prompt` `r config$sched$submit$name` `r config$sched$submit$options` example-job.sh
 ```
 
-Then, cancel them all:
+Luego, cancélalos todos:
 
 ```bash
 `r config$remote$prompt` `r config$sched$del` -u `r config$remote$user`
@@ -386,21 +391,23 @@ Then, cancel them all:
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
-## Other Types of Jobs
+## Otros tipos de trabajos
 
-Up to this point, we've focused on running jobs in batch mode.
-``r config$sched$name`` also provides the ability to start an interactive session.
+Hasta este punto, nos hemos enfocado en ejecutar trabajos en modo por lotes (*batch mode*).
+``r config$sched$name`` también ofrece la posibilidad de iniciar una sesión
+interactiva.
 
-There are very frequently tasks that need to be done interactively. Creating an
-entire job script might be overkill, but the amount of resources required is
-too much for a login node to handle. A good example of this might be building a
-genome index for alignment with a tool like [HISAT2][hisat]. Fortunately, we
-can run these types of tasks as a one-off with ``r config$sched$interactive``.
+Con mucha frecuencia hay tareas que deben hacerse de forma interactiva. Crear
+un script de trabajo completo puede ser excesivo, pero la cantidad de recursos
+requerida es demasiada para un nodo de acceso. Un buen ejemplo sería construir
+un índice genómico para alineamiento con una herramienta como [HISAT2][hisat].
+Por suerte, podemos ejecutar este tipo de tareas de una sola vez con
+``r config$sched$interactive``.
 
-``r config$sched$interactive`` runs a single command on the cluster and then
-exits. Let's demonstrate this by running the `hostname` command with
-``r config$sched$interactive``. (We can cancel an ``r config$sched$interactive``
-job with `Ctrl-c`.)
+``r config$sched$interactive`` ejecuta un solo comando en el clúster y luego
+sale. Demostremos esto ejecutando el comando `hostname` con
+``r config$sched$interactive``. (Podemos cancelar un trabajo de
+``r config$sched$interactive`` con `Ctrl-c`.)
 
 ```bash
 `r config$remote$prompt` `r config$sched$interactive` hostname
@@ -410,10 +417,11 @@ job with `Ctrl-c`.)
 `r config$remote$node`
 ```
 
-``r config$sched$interactive`` accepts all of the same options as
-``r config$sched$submit$name``. However, instead of specifying these in a script,
-these options are specified on the command-line when starting a job. To submit
-a job that uses 2 CPUs for instance, we could use the following command:
+``r config$sched$interactive`` acepta todas las mismas opciones que
+``r config$sched$submit$name``. Sin embargo, en lugar de especificarlas en un
+script, estas opciones se indican en la línea de comandos al iniciar un trabajo.
+Por ejemplo, para enviar un trabajo que use 2 CPU, podríamos usar el siguiente
+comando:
 
 ```bash
 `r config$remote$prompt` `r config$sched$interactive` -n 2 echo "This job will use 2 CPUs."
@@ -424,54 +432,56 @@ This job will use 2 CPUs.
 This job will use 2 CPUs.
 ```
 
-Typically, the resulting shell environment will be the same as that for
+Por lo general, el entorno de la shell resultante será el mismo que el de
 ``r config$sched$submit$name``.
 
-### Interactive jobs
+### Trabajos interactivos
 
-Sometimes, you will need a lot of resources for interactive use. Perhaps it's
-our first time running an analysis or we are attempting to debug something that
-went wrong with a previous job. Fortunately, `r config$sched$name` makes it
-easy to start an interactive job with ``r config$sched$interactive``:
+A veces necesitarás muchos recursos para uso interactivo. Tal vez sea nuestra
+primera vez ejecutando un análisis o estemos intentando depurar algo que salió
+mal en un trabajo anterior. Afortunadamente, `r config$sched$name` facilita
+iniciar un trabajo interactivo con ``r config$sched$interactive``:
 
 ```bash
 `r config$remote$prompt` `r config$sched$interactive` --pty bash
 ```
 
-You should be presented with a bash prompt. Note that the prompt will likely
-change to reflect your new location, in this case the compute node we are
-logged on. You can also verify this with `hostname`.
+Deberías ver un prompt de bash. Observa que el prompt probablemente cambiará
+para reflejar tu nueva ubicación, en este caso el nodo de cómputo en el que
+estamos conectados. También puedes verificarlo con `hostname`.
 
 :::::::::::::::::::::::::::::::::::::::::  callout
 
-## Creating remote graphics
+## Crear gráficos remotos
 
-To see graphical output inside your jobs, you need to use X11 forwarding. To
-connect with this feature enabled, use the `-Y` option when you login with
-the `ssh` command, e.g., `ssh -Y `r config$remote$user`@`r config$remote$login``.
+Para ver salida gráfica dentro de tus trabajos, necesitas usar reenvío X11.
+Para conectar con esta función habilitada, usa la opción `-X` cuando inicies
+sesión con el comando `ssh`, por ejemplo, `ssh -X `r config$remote$user`@`r config$remote$login``.
 
-To demonstrate what happens when you create a graphics window on the remote
-node, use the `xeyes` command. A relatively adorable pair of eyes should pop
-up (press `Ctrl-C` to stop). If you are using a Mac, you must have installed
-XQuartz (and restarted your computer) for this to work.
+Para demostrar lo que sucede cuando creas una ventana gráfica en el nodo
+remoto, usa el comando `xeyes`. Debería aparecer un par de ojos bastante
+adorables (presiona `Ctrl-C` para detener). Si usas Mac, debes haber instalado
+XQuartz (y reiniciado tu computadora) para que esto funcione.
 
-If your cluster has the
-[slurm-spank-x11](https://github.com/hautreux/slurm-spank-x11) plugin
-installed, you can ensure X11 forwarding within interactive jobs by using the
-`--x11` option for ``r config$sched$interactive`` with the command
+Si tu clúster tiene instalado el plugin
+[slurm-spank-x11](https://github.com/hautreux/slurm-spank-x11), puedes asegurar
+el reenvío X11 dentro de trabajos interactivos usando la opción `--x11` para
+``r config$sched$interactive`` con el comando
 ``r config$sched$interactive` --x11 --pty bash`.
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
-When you are done with the interactive job, type `exit` to quit your session.
+Cuando termines con el trabajo interactivo, escribe `exit` para salir de la
+sesión.
 
 [hisat]: https://daehwankimlab.github.io/hisat2/
 
 :::::::::::::::::::::::::::::::::::::::: keypoints
 
-- The scheduler handles how compute resources are shared between users.
-- A job is just a shell script.
-- Request *slightly* more resources than you will need.
+- El planificador gestiona cómo se comparten los recursos de cómputo entre
+  usuarios.
+- Un trabajo es solo un script de shell.
+- Solicita *ligeramente* más recursos de los que necesitarás.
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 

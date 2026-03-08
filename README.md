@@ -68,6 +68,16 @@ Instructions below still need to be edited to reflect the transition. Proceed wi
   future will probably not be accepted.
 
 ## Deploying a Customized Lesson
+
+```bash
+# Create a pixi environment and install dependencies
+pixi init
+pixi shell
+pixi add git r-varnish r-sandpaper  
+
+# Start the server
+R -e 'sandpaper::serve(quiet = FALSE, port = "3435")'
+```
 **While this lesson is in transition, we do not recommend customizing**
 
 The steps above will help you port the default HPC Intro lesson to your
