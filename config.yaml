@@ -33,7 +33,7 @@ life_cycle: 'beta'
 license: 'CC-BY 4.0'
 
 # Link to the source repository for this lesson
-source: 'https://github.com/Maro-HPC/base-hpc-intro.git'
+source: 'https://github.com/Maro-HPC/hpc-intro-es.git'
 
 # Default branch of your lesson
 branch: 'main'
@@ -112,6 +112,6 @@ default_config: episodes/files/customization/HPCC_MagicCastle_slurm/_config_opti
 # custom_config: episodes/files/customization/Ghastly_Mistakes/_config_options.yml
 
 carpentry_description: Lesson Description
-url: 'https://maro-hpc.github.io/base-hpc-intro/'
+url: 'https://maro-hpc.github.io/hpc-intro-es/'
 analytics: carpentries
 lang: es
